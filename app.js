@@ -4,11 +4,14 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const redisClient = require("./redis");
+const cors = require("cors");
 
 const indexRouter = require("./routes/index");
 
 const app = express();
 
+// enable cors
+app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
