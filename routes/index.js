@@ -10,37 +10,41 @@ router.post("/send-bulk-emails", async function (req, res, next) {
 	const htmlEmail = req.body.htmlEmail;
 	const emailText = req.body.emailText;
 
-	await doc.useServiceAccountAuth({
-		client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-		private_key: process.env.GOOGLE_PRIVATE_KEY
-	});
+	try {
+		await doc.useServiceAccountAuth({
+			client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+			private_key: process.env.GOOGLE_PRIVATE_KEY
+		});
 
-	await doc.loadInfo();
-	const sheet = doc.sheetsByIndex[0]; // or use doc.sheetsById[id] or doc.sheetsByTitle[title]
+		await doc.loadInfo();
+		const sheet = doc.sheetsByIndex[0]; // or use doc.sheetsById[id] or doc.sheetsByTitle[title]
 
-	const rows = await sheet.getRows({
-		offset: 0 // skip first line
-	});
+		const rows = await sheet.getRows({
+			offset: 0 // skip first line
+		});
 
-	let serverCurIndex = 0;
-	rows.forEach(row => {
-		if (serverCurIndex < totalServersCount) {
-			serverCurIndex += 1;
-		} else serverCurIndex = 1;
+		let serverCurIndex = 0;
+		rows.forEach(row => {
+			if (serverCurIndex < totalServersCount) {
+				serverCurIndex += 1;
+			} else serverCurIndex = 1;
 
-		if (row.email?.length > 0) {
-			sendEmailToQueue({
-				to: row.email,
-				name: row.name,
-				subject: subject,
-				smtpServer: serverCurIndex,
-				htmlEmail: htmlEmail,
-				emailText: emailText
-			});
-		}
-	});
+			if (row.email?.length > 0) {
+				sendEmailToQueue({
+					to: row.email,
+					name: row.name,
+					subject: subject,
+					smtpServer: serverCurIndex,
+					htmlEmail: htmlEmail,
+					emailText: emailText
+				});
+			}
+		});
 
-	res.status(200).send();
+		res.status(200).send();
+	} catch (e) {
+		res.status(500).send();
+	}
 });
 
 module.exports = router;
