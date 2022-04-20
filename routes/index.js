@@ -30,14 +30,16 @@ router.post("/send-bulk-emails", async function (req, res, next) {
 			} else serverCurIndex = 1;
 
 			if (row.email?.length > 0) {
-				sendEmailToQueue({
-					to: row.email,
-					name: row.name,
-					subject: subject,
-					smtpServer: serverCurIndex,
-					htmlEmail: htmlEmail,
-					emailText: emailText
-				});
+				setTimeout(() => {
+					sendEmailToQueue({
+						to: row.email,
+						name: row.name,
+						subject: subject,
+						smtpServer: serverCurIndex,
+						htmlEmail: htmlEmail,
+						emailText: emailText
+					});
+				}, 1000)
 			}
 		});
 
