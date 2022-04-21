@@ -107,7 +107,7 @@ router.post("/send-bulk-emails", async function (req, res, next) {
 		const finalArr = [[]];
 		let serverCurIndex = 0;
 		let currPos = 0;
-		rows.forEach((row, i) => {
+		rows.forEach((row) => {
 			if (serverCurIndex < totalServersCount) {
 				serverCurIndex += 1;
 			} else {
@@ -139,6 +139,7 @@ router.post("/send-bulk-emails", async function (req, res, next) {
 			inter += sendInterval;
 		}
 	} catch (e) {
+		console.log(e)
 		res.status(500).send();
 	}
 });
