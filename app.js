@@ -3,7 +3,6 @@ require("dotenv").config();
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-const redisClient = require("./redis");
 const cors = require("cors");
 
 const indexRouter = require("./routes/index");
